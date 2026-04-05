@@ -36,7 +36,17 @@ def load_housing_data():
     #   1. Use fetch_california_housing(as_frame=True)
     #   2. The target variable should be named 'MedHouseVal'
     #   3. Return a single DataFrame with features AND target combined
-    raise NotImplementedError("Implement load_housing_data()")
+    # raise NotImplementedError("Implement load_housing_data()")
+    housing = fetch_california_housing(as_frame=True)
+    
+    # Features DataFrame
+    df = housing.data.copy()
+    
+    # Add target column
+    df['MedHouseVal'] = housing.target
+    
+    # returns the combined DataFrame
+    return df
 
 
 def preprocess_features(df, target_col='MedHouseVal'):
@@ -67,8 +77,23 @@ def preprocess_features(df, target_col='MedHouseVal'):
     #   1. Separate X (features) and y (target)
     #   2. Fit a StandardScaler on X
     #   3. Return the scaled X, y, feature names, and the scaler
-    raise NotImplementedError("Implement preprocess_features()")
-
+    # raise NotImplementedError("Implement preprocess_features()")
+    
+    # Separate features and target
+    X = df.drop(columns=[target_col])
+    y = df[target_col].values
+    
+    # Get feature names
+    feature_names = X.columns.tolist()
+    
+    # standardize features
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
+    # retrurn scaled features, target, feature names, and scaler
+    return X_scaled, y, feature_names, scaler
+    
+    
 
 def split_data(X, y, test_size=0.2, random_state=42):
     """
@@ -93,7 +118,13 @@ def split_data(X, y, test_size=0.2, random_state=42):
         True
     """
     # TODO: Implement this function
-    raise NotImplementedError("Implement split_data()")
+    # raise NotImplementedError("Implement split_data()")
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, 
+        test_size=test_size, 
+        random_state=random_state
+        )
+    return X_train, X_test, y_train, y_test
 
 
 def create_feature_engineering(df):
@@ -128,7 +159,24 @@ def create_feature_engineering(df):
     #   1. Make a copy of df to avoid modifying the original
     #   2. Create the three new features described above
     #   3. Handle potential division by zero cases
-    raise NotImplementedError("Implement create_feature_engineering()")
+    # raise NotImplementedError("Implement create_feature_engineering()")
+    
+    # Make a copy of the original DataFrame
+    df_eng =  df.copy()
+    
+    # Prevent division by zero
+    epsilon = 1e-10 # small constant to prevent division by zero
+    
+    # rooms_per_household: AveRooms * AveOccup
+    df_eng['rooms_per_household'] = df_eng['AveRooms'] * df_eng['AveOccup']
+    
+    # bedrooms_ratio: AveBedrms / AveRooms
+    df_eng['bedrooms_ratio'] = df_eng['AveBedrms'] / (df_eng['AveRooms']+ epsilon)
+    
+    # population_density: Population / AveOccup
+    df_eng['population_density'] = df_eng['Population'] / (df_eng['AveOccup'] + epsilon)
+    
+    return df_eng
 
 
 if __name__ == "__main__":
