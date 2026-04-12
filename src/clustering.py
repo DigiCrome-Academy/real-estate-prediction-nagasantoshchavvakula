@@ -390,20 +390,22 @@ def find_optimal_components(X, variance_threshold=0.95):
     #   3. Find the first index where cumulative variance >= threshold
     # raise NotImplementedError("Implement find_optimal_components()")
     # Fit PCA with all components
-    model = PCA(n_components=None)
+    model = PCA()
     model.fit(X)
     
     # Compute cumulative variance
     cumulative_variance = np.cumsum(model.explained_variance_ratio_)
     
     # Handle Threshold edge case
-    if variance_threshold <= 0.999:
-        return 1
+    if variance_threshold >= 0.999:
+        return X.shape[1]  # Return all components if threshold is very high
     
     # Find the first index where cumulative variance >= threshold
-    n_components = np.argmax(cumulative_variance >= variance_threshold) + 1
+    for i, val in enumerate(cumulative_variance):
+        if val >= variance_threshold:
+            return i + 1
     
-    return n_components
+    return X.shape[1]  # Fallback to all components if threshold is not met
 
 def cluster_with_pca(X, n_clusters, n_components=2, random_state=42):
     """
