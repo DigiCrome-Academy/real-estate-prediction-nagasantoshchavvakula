@@ -13,3 +13,5 @@ pytest>=7.4.0
 pytest-timeout>=2.2.0
 notebook>=7.0.0
 ipykernel>=6.25.0
+requests>=2.31.0
+gdown>=2.0.0
