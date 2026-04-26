@@ -103,6 +103,7 @@ voting_model, stacking_model = get_models()
 # =============================================================================
 if page == "Price Prediction":
     st.header("💰 Price Prediction")
+    st.write("Select values for the below features to predict estimated price")
 
     available = {}
     if stacking_model:
