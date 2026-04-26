@@ -315,4 +315,4 @@ elif page == "Market Segmentation":
 # Footer
 # =============================================================================
 st.markdown("---")
-st.markdown("Built using California Housing dataset")
+st.markdown("Built as part of the Real Estate Price Prediction Engine project. Uses the California Housing dataset from scikit-learn.")
